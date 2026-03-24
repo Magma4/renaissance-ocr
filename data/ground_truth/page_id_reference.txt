@@ -1,0 +1,12 @@
+Available page_ids
+
+Use these exact ids when you replace the TODO markers in transcription_marked.txt.
+
+buendia_instruccion:
+  - buendia_instruccion_page_0001
+  - buendia_instruccion_page_0002
+  - buendia_instruccion_page_0003
+
+covarrubias_tesoro_lengua:
+  - covarrubias_tesoro_lengua_page_0001
+  - covarrubias_tesoro_lengua_page_0002
