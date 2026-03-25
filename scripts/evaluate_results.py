@@ -46,6 +46,16 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     prediction_records = read_jsonl(args.predictions_file)
+    
+    # Map the unique VLM keys or TrOCR keys into the format expected by the evaluator
+    for p in prediction_records:
+        if "vlm_text" in p:
+            p["raw_ocr"] = p["vlm_text"]
+            p["cleaned_ocr"] = p["vlm_text"]
+        elif "text" in p and "raw_ocr" not in p:
+            p["raw_ocr"] = p["text"]
+            p["cleaned_ocr"] = p["text"]
+
     ground_truth_records = load_ground_truth_records(args.ground_truth_file)
     evaluation = evaluate_records(prediction_records, ground_truth_records)
     save_evaluation_artifacts(evaluation, args.output_dir, example_limit=args.example_limit)
