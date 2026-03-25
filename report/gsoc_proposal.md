@@ -10,13 +10,13 @@
 
 ## Synopsis
 
-Most OCR tools were built for modern text. Point one at a page of 17th-century printed Spanish prose and it quietly falls apart. This project is about closing that gap. I want to build a pipeline that handles the specific failure modes of early modern typefaces—the long-s that looks like an f, the near-identical capital I and lowercase l, the abbreviation marks that no modern training corpus has ever seen—and actually produces usable output for researchers who need to work with these sources computationally. The approach combines a custom CNN-RNN recognizer trained with frequency-weighted CTC loss, a lexicon-constrained beam search decoder, and a Gemini LLM post-correction step. The goal is to get Character Error Rate low enough that historians can actually do something useful with the results.
+Most OCR tools were built for modern text. Point one at a page of 17th-century printed Spanish prose and it quietly falls apart. This project is about closing that gap. I want to build a pipeline that handles the specific failure modes of early modern typefaces the long-s that looks like an f, the near-identical capital I and lowercase l, the abbreviation marks that no modern training corpus has ever seen and actually produces usable output for researchers who need to work with these sources computationally. The approach combines a custom CNN-RNN recognizer trained with frequency-weighted CTC loss, a lexicon-constrained beam search decoder, and a Gemini LLM post-correction step. The goal is to get Character Error Rate low enough that historians can actually do something useful with the results.
 
 ---
 
 ## Benefits to Community
 
-If this works, the payoff is real. There are large collections of 17th-century Spanish legal and religious documents sitting in archives that are effectively invisible to computational analysis because no one can search them, link them, or run any kind of text analysis on them. The OCR output is just too noisy. A pipeline that can hold CER below 0.3 on clean pages—which I think is achievable with proper domain-specific fine-tuning—changes that. Documents that researchers currently have to transcribe by hand become machine-readable. Text corpora that could not be assembled at all become possible. And because the whole thing will be open source and built on standard tooling, it's not a one-off research prototype: other groups working on similar historical languages can adapt and extend it.
+If this works, the payoff is real. There are large collections of 17th-century Spanish legal and religious documents sitting in archives that are effectively invisible to computational analysis because no one can search them, link them, or run any kind of text analysis on them. The OCR output is just too noisy. A pipeline that can hold CER below 0.3 on clean pages which I think is achievable with proper domain-specific fine-tuning changes that. Documents that researchers currently have to transcribe by hand become machine-readable. Text corpora that could not be assembled at all become possible. And because the whole thing will be open source and built on standard tooling, it's not a one-off research prototype: other groups working on similar historical languages can adapt and extend it.
 
 ---
 
@@ -24,19 +24,19 @@ If this works, the payoff is real. There are large collections of 17th-century S
 
 Right now, the main thing blocking useful CRNN training is line segmentation. When you feed a full page through CTC, the ground truth text is too long relative to the output sequence length and most batches get zeroed out by `zero_infinity=True`. The model does not converge. Fixing this means moving to per-line crops with per-line labels, which means the line detector needs to actually work first.
 
-**Phase 1 — Data and line-level training (Weeks 1 to 4)**
+**Phase 1   Data and line-level training (Weeks 1 to 4)**
 
 - A lightweight trainable line detector (U-Net or YOLO-based) to replace the current projection-profile heuristic. **[Required]**
 - Ground truth expansion: the current transcription file has 19 unassigned pages marked TODO. Getting even half of those covered meaningfully increases training data. **[Required]**
 - End-to-end CRNN training at the line level with healthy loss curves. **[Required]**
 
-**Phase 2 — Model improvements (Weeks 5 to 8)**
+**Phase 2   Model improvements (Weeks 5 to 8)**
 
 - Augmentation experiments: synthetic degradation, rotation, ink bleeding. **[Optional]**
 - Self-supervised pre-training on unlabelled page crops before fine-tuning on ground truth. **[Optional]**
 - Explore replacing the BiLSTM head with a lightweight cross-attention layer as a CRNN variant. **[Optional]**
 
-**Phase 3 — Evaluation and delivery (Weeks 9 to 12)**
+**Phase 3   Evaluation and delivery (Weeks 9 to 12)**
 
 - Full pipeline evaluation across all six source corpora, not just Buendia. **[Required]**
 - Statistical comparison between fine-tuned TrOCR and the trained CRNN. **[Required]**
@@ -68,9 +68,9 @@ What makes this project different is the combination: a CRNN recognizer optimize
 
 ## Biographical Information
 
-I hold an MSc in Computer Science (expected Dec 2026) from the University of New Haven—where my coursework has focused on AI, Computer Vision, and Algorithm Design—and a prior MSc in Information Technology from KNUST in Ghana. I also did my undergrad in Computer Science at KNUST.
+I hold an MSc in Computer Science (expected Dec 2026) from the University of New Haven where my coursework has focused on AI, Computer Vision, and Algorithm Design and a prior MSc in Information Technology from KNUST in Ghana. I also did my undergrad in Computer Science at KNUST.
 
-I currently work as a Graduate Research Assistant at the SAIL Lab (University of New Haven), where I build NLP pipelines for processing unstructured PDF and email data using LLM APIs (OpenAI and Anthropic Claude), and architect full-stack dashboards in FastAPI and React to surface those results to stakeholders. Before that I was a Software Engineer at KNUST where I scaled data pipelines to 50M+ monthly data points, deployed a Django REST API serving 50K+ requests/day, and reduced query latency by 60% through database optimization. I also did an internship at EXRX.NET where I shipped a mobile fitness app to iOS and Android in 12 weeks—15K users in the first month.
+I currently work as a Graduate Research Assistant at the SAIL Lab (University of New Haven), where I build NLP pipelines for processing unstructured PDF and email data using LLM APIs (OpenAI and Anthropic Claude), and architect full-stack dashboards in FastAPI and React to surface those results to stakeholders. Before that I was a Software Engineer at KNUST where I scaled data pipelines to 50M+ monthly data points, deployed a Django REST API serving 50K+ requests/day, and reduced query latency by 60% through database optimization. I also did an internship at EXRX.NET where I shipped a mobile fitness app to iOS and Android in 12 weeks 15K users in the first month.
 
 On the ML side, I've worked with PyTorch, NLP, and reinforcement learning. I built a Tower Defense AI using Q-Learning and PPO that achieved a 78% win rate versus a 62% A* baseline. I also built SentinelMD, an offline-capable clinical safety tool using MedGemma open-weight models, for Google's HAI-DEF hackathon.
 
