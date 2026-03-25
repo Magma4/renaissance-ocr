@@ -68,11 +68,15 @@ What makes this project different is the combination: a CRNN recognizer optimize
 
 ## Biographical Information
 
-I'm a Computer Science student and have been working on computer vision and NLP problems for a couple of years. I'm comfortable in Python, PyTorch, and the Hugging Face ecosystem. I know the CTC loss formulation well enough to have debugged it from scratch during the evaluation test. I've built sequence-to-sequence models and have some experience with historical document processing.
+I hold an MSc in Computer Science (expected Dec 2026) from the University of New Haven—where my coursework has focused on AI, Computer Vision, and Algorithm Design—and a prior MSc in Information Technology from KNUST in Ghana. I also did my undergrad in Computer Science at KNUST.
 
-For this application specifically, I built a working end-to-end pipeline before submitting: a CRNN implemented from scratch in PyTorch with inverse-frequency character weighting, a pure-Python lexicon beam search decoder, Gemini API integration for post-correction with a fallback to rule-based cleaning, TrOCR fine-tuning scripts using `Seq2SeqTrainer`, and a CER/WER evaluation framework. The full code is at https://github.com/Magma4/renaissance-ocr.
+I currently work as a Graduate Research Assistant at the SAIL Lab (University of New Haven), where I build NLP pipelines for processing unstructured PDF and email data using LLM APIs (OpenAI and Anthropic Claude), and architect full-stack dashboards in FastAPI and React to surface those results to stakeholders. Before that I was a Software Engineer at KNUST where I scaled data pipelines to 50M+ monthly data points, deployed a Django REST API serving 50K+ requests/day, and reduced query latency by 60% through database optimization. I also did an internship at EXRX.NET where I shipped a mobile fitness app to iOS and Android in 12 weeks—15K users in the first month.
 
-My baseline results on three matched evaluation pages:
+On the ML side, I've worked with PyTorch, NLP, and reinforcement learning. I built a Tower Defense AI using Q-Learning and PPO that achieved a 78% win rate versus a 62% A* baseline. I also built SentinelMD, an offline-capable clinical safety tool using MedGemma open-weight models, for Google's HAI-DEF hackathon.
+
+For this application specifically, before submitting the proposal, I built a working end-to-end OCR pipeline: a CRNN from scratch in PyTorch with inverse-frequency character weighting, a pure-Python lexicon beam search decoder, Gemini API integration for post-correction with a rule-based fallback, TrOCR fine-tuning scripts using `Seq2SeqTrainer`, and a full CER/WER evaluation framework. Code is at https://github.com/Magma4/renaissance-ocr.
+
+Baseline results on three matched evaluation pages:
 
 | Backend             | CER    | WER    |
 |---------------------|--------|--------|
@@ -80,10 +84,10 @@ My baseline results on three matched evaluation pages:
 | Rule-based cleanup  | 1.1423 | 1.3050 |
 | Gemini cleanup      | 1.1026 | 1.2879 |
 
-The Gemini step caught things like capital I being misread as lowercase l ("Ia" to "la"), which is a genuine 17th-century OCR failure mode.
+The Gemini step caught genuine 17th-century OCR errors like capital I misread as lowercase l ("Ia" to "la").
 
 ---
 
 ## Practical Notes
 
-This is a 175-hour project. I'm available roughly 15 hours per week over the 12-week GSoC period. Development will be on a MacBook with an M-series chip; compute-heavy training runs on a cloud VM where I have GCP credits. I prefer async communication over email or chat and I'm happy to do weekly syncs if the mentors prefer video calls.
+This is a 175-hour project. I'm available roughly 15 hours per week over the 12-week GSoC period. I develop on a MacBook with an M-series chip and run compute-heavy training on a cloud VM where I have GCP credits. I prefer async communication over email or chat and I'm happy to do weekly video syncs if the mentors prefer.
