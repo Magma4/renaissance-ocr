@@ -1,9 +1,9 @@
 # renAIssance: Printed OCR
 
-**Organization:** HumanAI Foundation  
-**Applicant:** Raymond Frimpong Amoateng  
-**Email:** raymond.f.amoateng@example.com  
-**GitHub:** github.com/Magma4  
+**Organization:** HumanAI Foundation
+**Applicant:** Raymond Frimpong Amoateng
+**Email:** raymondamoateng@gmail.com
+**GitHub:** https://github.com/Magma4
 **Project:** RenAIssance: Improving OCR for Early Modern Printed Spanish Sources
 
 ---
@@ -46,11 +46,11 @@ A CER/WER evaluation framework comparing raw, rule-based, and Gemini cleanup res
 
 Results on 3 matched evaluation pages:
 
-| Backend | CER | WER |
-|---|---|---|
+| Backend             | CER    | WER    |
+| ------------------- | ------ | ------ |
 | TrOCR zero-shot raw | 1.1468 | 1.3387 |
-| Rule-based cleanup | 1.1423 | 1.3050 |
-| Gemini cleanup | 1.1026 | 1.2879 |
+| Rule-based cleanup  | 1.1423 | 1.3050 |
+| Gemini cleanup      | 1.1026 | 1.2879 |
 
 Gemini correctly caught things like capital I being misread as lowercase l ("Ia" to "la"), which is a real 17th-century OCR failure mode.
 
@@ -86,17 +86,17 @@ Full pipeline evaluation across all sources, not just Buendia. A proper comparis
 
 ## Timeline
 
-| Week | Work |
-|---|---|
-| 1 | Set up communication with mentors, finalize ground truth expansion plan, annotate 5 to 10 pages for line detection |
-| 2 to 3 | Train lightweight line detector, replace projection heuristic with model-based segmentation |
-| 4 | End-to-end CRNN training at line level, verify loss curves look healthy |
-| 5 to 6 | Experiment with augmentation, try cross-attention CRNN variant |
-| 7 | Midterm evaluation, document results so far |
-| 8 | Self-supervised pre-training experiments |
-| 9 to 10 | Full pipeline evaluation across all 6 sources |
-| 11 | Fine-tuned TrOCR vs CRNN comparison, statistical analysis |
-| 12 | Final documentation, demo, cleanup, final evaluation |
+| Week    | Work                                                                                                               |
+| ------- | ------------------------------------------------------------------------------------------------------------------ |
+| 1       | Set up communication with mentors, finalize ground truth expansion plan, annotate 5 to 10 pages for line detection |
+| 2 to 3  | Train lightweight line detector, replace projection heuristic with model-based segmentation                        |
+| 4       | End-to-end CRNN training at line level, verify loss curves look healthy                                            |
+| 5 to 6  | Experiment with augmentation, try cross-attention CRNN variant                                                     |
+| 7       | Midterm evaluation, document results so far                                                                        |
+| 8       | Self-supervised pre-training experiments                                                                           |
+| 9 to 10 | Full pipeline evaluation across all 6 sources                                                                      |
+| 11      | Fine-tuned TrOCR vs CRNN comparison, statistical analysis                                                          |
+| 12      | Final documentation, demo, cleanup, final evaluation                                                               |
 
 ---
 
