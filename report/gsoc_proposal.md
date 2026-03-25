@@ -10,65 +10,80 @@
 
 ## Synopsis
 
-This project aims to build an end-to-end OCR pipeline designed specifically for 17th-century printed Spanish sources. Traditional OCR engines and modern vision-language models struggle with historical typefaces, such as the long-s, archaic ligatures, and abbreviation marks. This proposal details a custom CNN-RNN model trained with inverse-frequency weighted CTC loss to handle rare diacritics, paired with a lexicon-constrained beam search decoder and Gemini LLM post-correction. The goal is to reduce the Character Error Rate to a usable level for digital humanities researchers on limited labelled data.
+Most OCR tools were built for modern text. Point one at a page of 17th-century printed Spanish prose and it quietly falls apart. This project is about closing that gap. I want to build a pipeline that handles the specific failure modes of early modern typefaces—the long-s that looks like an f, the near-identical capital I and lowercase l, the abbreviation marks that no modern training corpus has ever seen—and actually produces usable output for researchers who need to work with these sources computationally. The approach combines a custom CNN-RNN recognizer trained with frequency-weighted CTC loss, a lexicon-constrained beam search decoder, and a Gemini LLM post-correction step. The goal is to get Character Error Rate low enough that historians can actually do something useful with the results.
 
 ---
 
 ## Benefits to Community
 
-There are thousands of 17th-century Spanish documents in archives that are essentially inaccessible to computational analysis because the OCR quality is too low to be useful. A pipeline that can get CER below 0.3 on clean pages, which I think is achievable with proper fine-tuning, would make those documents searchable, linkable, and analyzable in ways that are not currently possible. This project will deliver a fully open-source pipeline that Google, HumanAI, and society at large can use to unlock historical Spanish texts.
+If this works, the payoff is real. There are large collections of 17th-century Spanish legal and religious documents sitting in archives that are effectively invisible to computational analysis because no one can search them, link them, or run any kind of text analysis on them. The OCR output is just too noisy. A pipeline that can hold CER below 0.3 on clean pages—which I think is achievable with proper domain-specific fine-tuning—changes that. Documents that researchers currently have to transcribe by hand become machine-readable. Text corpora that could not be assembled at all become possible. And because the whole thing will be open source and built on standard tooling, it's not a one-off research prototype: other groups working on similar historical languages can adapt and extend it.
 
 ---
 
 ## Deliverables
 
-The main gap right now is that CRNN training does not work properly at the page level. Fixing this requires per-line crops with per-line text labels, which means better line segmentation.
+Right now, the main thing blocking useful CRNN training is line segmentation. When you feed a full page through CTC, the ground truth text is too long relative to the output sequence length and most batches get zeroed out by `zero_infinity=True`. The model does not converge. Fixing this means moving to per-line crops with per-line labels, which means the line detector needs to actually work first.
 
-**Phase 1: Better data and line-level training (Weeks 1 to 4)**
-*   Train a lightweight trainable line detector (U-Net or YOLO) fine-tuned on annotated rows. **[Required]**
-*   Expand ground truth coverage by transcribing the remaining 19 unassigned pages. **[Required]**
+**Phase 1 — Data and line-level training (Weeks 1 to 4)**
 
-**Phase 2: Model improvements (Weeks 5 to 8)**
-*   End-to-end line-level CRNN training with the new data. **[Required]**
-*   Experiment with self-supervised pre-training on unlabelled page crops. **[Optional]**
-*   Replace BiLSTM head with a lightweight cross-attention layer. **[Optional]** 
+- A lightweight trainable line detector (U-Net or YOLO-based) to replace the current projection-profile heuristic. **[Required]**
+- Ground truth expansion: the current transcription file has 19 unassigned pages marked TODO. Getting even half of those covered meaningfully increases training data. **[Required]**
+- End-to-end CRNN training at the line level with healthy loss curves. **[Required]**
 
-**Phase 3: System integration and evaluation (Weeks 9 to 12)**
-*   Full pipeline evaluation across all sources. **[Required]**
-*   Clean public-facing demo and documentation. **[Required]**
+**Phase 2 — Model improvements (Weeks 5 to 8)**
+
+- Augmentation experiments: synthetic degradation, rotation, ink bleeding. **[Optional]**
+- Self-supervised pre-training on unlabelled page crops before fine-tuning on ground truth. **[Optional]**
+- Explore replacing the BiLSTM head with a lightweight cross-attention layer as a CRNN variant. **[Optional]**
+
+**Phase 3 — Evaluation and delivery (Weeks 9 to 12)**
+
+- Full pipeline evaluation across all six source corpora, not just Buendia. **[Required]**
+- Statistical comparison between fine-tuned TrOCR and the trained CRNN. **[Required]**
+- Final documentation and a clean public-facing demo. **[Required]**
 
 ### Timeline
 
-| Week    | Work                                                                                                               | Status |
-| ------- | ------------------------------------------------------------------------------------------------------------------ | ------ |
-| 1       | Set up communication with mentors, finalize ground truth expansion plan, annotate 5 to 10 pages for line detection | Required |
-| 2 to 3  | Train lightweight line detector, replace projection heuristic with model-based segmentation                        | Required |
-| 4       | End-to-end CRNN training at line level, verify loss curves look healthy                                            | Required |
-| 5 to 6  | Experiment with augmentation, try cross-attention CRNN variant                                                     | Optional |
-| 7       | Midterm evaluation, document results so far                                                                        | Required |
-| 8       | Self-supervised pre-training experiments                                                                           | Optional |
-| 9 to 10 | Full pipeline evaluation across all 6 sources                                                                      | Required |
-| 11      | Fine-tuned TrOCR vs CRNN comparison, statistical analysis                                                          | Required |
-| 12      | Final documentation, demo, cleanup, final evaluation                                                               | Required |
+| Week    | Work |
+|---------|------|
+| 1       | Meet with mentors, plan ground truth expansion, annotate 5 to 10 pages for line detection |
+| 2 to 3  | Train line detector, replace projection heuristic |
+| 4       | Line-level CRNN training, check loss curves |
+| 5 to 6  | Augmentation experiments, cross-attention CRNN variant |
+| 7       | Midterm evaluation |
+| 8       | Self-supervised pre-training experiments |
+| 9 to 10 | Full evaluation across all 6 corpora |
+| 11      | TrOCR vs CRNN comparison with statistical analysis |
+| 12      | Final documentation, demo, cleanup |
 
 ---
 
 ## Related Work
 
-Existing OCR engines like Tesseract and Kraken are widely used in digital humanities but often require extensive fine-tuning and layout annotation to work well on historical texts. Modern vision-transformer approaches like TrOCR provide a strong zero-shot baseline but still suffer from domain mismatch on 17th-century letterforms. This project builds upon these foundations by combining a lightweight, domain-specific CRNN architecture with modern LLM post-processing (Gemini), demonstrating that a hybrid approach—specialized recognition and contextual correction—can significantly outperform zero-shot monolithic models. 
+Tesseract is the standard workhorse for historical OCR but needs careful layout pre-processing and often breaks on dense or ornate pages from this period. Kraken handles historical scripts better and is widely used in the digital humanities community, but it still requires line-level ground truth annotations to train on custom layouts. TrOCR is a strong zero-shot baseline because it was trained on a large mix of printed and handwritten text, but domain mismatch hits hard on 17th-century letterforms. During the evaluation test I ran `microsoft/trocr-base-printed` zero-shot on three pages from the Buendia Instruccion source and got a CER of about 1.15. The model was producing output like "WWW.LLM" and "GARDORIZIO ON 6020" where the ground truth is actual Spanish prose. That's not a calibration issue, it's a fundamental domain mismatch.
 
-For the evaluation test, I put together a full preliminary pipeline before submitting this proposal. Results on 3 matched evaluation pages showed Gemini LLM cleanup reduced CER from 1.1468 (TrOCR zero-shot) to 1.1026. The pipeline code is at: https://github.com/Magma4/renaissance-ocr
+What makes this project different is the combination: a CRNN recognizer optimized specifically for the character distribution of period Spanish text, a lexicon decoder that biases toward historically plausible words at word boundaries, and an LLM post-correction step that can catch errors that are semantically obvious even when they're ambiguous visually. None of the existing tools use all three in combination.
 
 ---
 
 ## Biographical Information
 
-I am a Computer Science student with a strong interest in machine learning applied to cultural heritage problems. I have been working with computer vision and NLP for a couple of years, not just as coursework but because I find the problem of making historical documents machine-readable genuinely interesting. Most OCR research focuses on modern text, so the failure modes on 17th-century typefaces are actually a different and underexplored problem.
+I'm a Computer Science student and have been working on computer vision and NLP problems for a couple of years. I'm comfortable in Python, PyTorch, and the Hugging Face ecosystem. I know the CTC loss formulation well enough to have debugged it from scratch during the evaluation test. I've built sequence-to-sequence models and have some experience with historical document processing.
 
-I am comfortable working in Python, PyTorch, and Transformers. I have built sequence-to-sequence models before and I know the CTC loss formulation well enough to have debugged it from scratch. I can work independently and I know when to ask questions.
+For this application specifically, I built a working end-to-end pipeline before submitting: a CRNN implemented from scratch in PyTorch with inverse-frequency character weighting, a pure-Python lexicon beam search decoder, Gemini API integration for post-correction with a fallback to rule-based cleaning, TrOCR fine-tuning scripts using `Seq2SeqTrainer`, and a CER/WER evaluation framework. The full code is at https://github.com/Magma4/renaissance-ocr.
+
+My baseline results on three matched evaluation pages:
+
+| Backend             | CER    | WER    |
+|---------------------|--------|--------|
+| TrOCR zero-shot raw | 1.1468 | 1.3387 |
+| Rule-based cleanup  | 1.1423 | 1.3050 |
+| Gemini cleanup      | 1.1026 | 1.2879 |
+
+The Gemini step caught things like capital I being misread as lowercase l ("Ia" to "la"), which is a genuine 17th-century OCR failure mode.
 
 ---
 
 ## Practical Notes
 
-This runs as a standard 175-hour GSoC project. I have a MacBook with an M-series chip for development. Compute-heavy training I will run on a cloud VM where I have GCP credits. I am available about 15 hours per week during the 12-week GSoC period to complete the 175 hours. I prefer async communication but am happy to do weekly video syncs if that works for the mentors.
+This is a 175-hour project. I'm available roughly 15 hours per week over the 12-week GSoC period. Development will be on a MacBook with an M-series chip; compute-heavy training runs on a cloud VM where I have GCP credits. I prefer async communication over email or chat and I'm happy to do weekly syncs if the mentors prefer video calls.
