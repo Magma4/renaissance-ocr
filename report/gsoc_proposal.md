@@ -2,9 +2,15 @@
 
 **Organization:** HumanAI Foundation  
 **Applicant:** Raymond Frimpong Amoateng  
+**Email:** raymond.f.amoateng@example.com  
+**GitHub:** github.com/Magma4  
 **Project:** RenAIssance: Improving OCR for Early Modern Printed Spanish Sources
 
 ---
+
+## Synopsis
+
+This project aims to build an end-to-end OCR pipeline designed specifically for 17th-century printed Spanish sources. Traditional OCR engines and modern vision-language models struggle with historical typefaces, such as the long-s, archaic ligatures, and abbreviation marks. This proposal details a custom CNN-RNN model trained with inverse-frequency weighted CTC loss to handle rare diacritics, paired with a lexicon-constrained beam search decoder and Gemini LLM post-correction. The goal is to reduce the Character Error Rate to a usable level for digital humanities researchers on limited labelled data.
 
 ## About Me
 
@@ -52,7 +58,13 @@ The repo is at: https://github.com/Magma4/renaissance-ocr
 
 ---
 
-## What I Plan to Build During GSoC
+## Related Work
+
+Existing OCR engines like Tesseract and Kraken are widely used in digital humanities but often require extensive fine-tuning and layout annotation to work well on historical texts. Modern vision-transformer approaches like TrOCR provide a strong zero-shot baseline but still suffer from domain mismatch on 17th-century letterforms. This project builds upon these foundations by combining a lightweight, domain-specific CRNN architecture with modern LLM post-processing (Gemini), demonstrating that a hybrid approach—specialized recognition and contextual correction—can significantly outperform zero-shot monolithic models.
+
+---
+
+## Deliverables
 
 The main gap right now is that CRNN training does not work properly at the page level. The ground truth text is too long relative to the CTC output sequence, so most batches get zeroed by zero_infinity=True. The model does not learn. Fixing this requires per-line crops with per-line text labels, which means better line segmentation.
 
