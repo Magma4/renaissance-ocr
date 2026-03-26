@@ -4,8 +4,10 @@ import os
 from pathlib import Path
 
 from PIL import Image
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 # Disable PIL DOS protection since historical manuscript scans are massive
+
 Image.MAX_IMAGE_PIXELS = None
 
 
@@ -46,6 +48,11 @@ class GeminiVLMExtractor:
         self.client = genai.Client(api_key=self.api_key)
         self.model_name = model_name
 
+    @retry(
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=4, max=60),
+        reraise=True
+    )
     def extract_text(self, image_path: Path | str) -> str:
         """Transcribe text from a handwritten manuscript image in a single zero-shot pass."""
         image = Image.open(image_path)

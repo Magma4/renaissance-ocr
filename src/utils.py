@@ -143,6 +143,8 @@ def index_by(records: Iterable[dict[str, Any]], key: str) -> dict[str, dict[str,
 
 
 def slugify_name(text: str) -> str:
+    # Handle HTML entities or common URL encoding that might have crept into filenames
+    text = text.replace("&#x3a;", "_").replace(":", "_").replace(".", "_")
     ascii_text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
     lowered = ascii_text.lower()
     cleaned = re.sub(r"[^a-z0-9]+", "_", lowered)

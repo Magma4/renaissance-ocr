@@ -37,9 +37,17 @@ def main():
     print(f"Loaded {len(manifest)} pages from {args.manifest}")
     
     extractor = GeminiVLMExtractor()
-    results = []
+    
+    # Load existing results for idempotency
+    results = read_jsonl(args.output, missing_ok=True)
+    existing_ids = {r["page_id"] for r in results}
+    if existing_ids:
+        print(f"Resuming: skipping {len(existing_ids)} pages already processed.")
 
     for item in tqdm(manifest, desc="Extracting text via VLM"):
+        if item["page_id"] in existing_ids:
+            continue
+            
         image_path = Path(item["image_path"])
         if not image_path.exists():
             print(f"Warning: Image missing {image_path}")

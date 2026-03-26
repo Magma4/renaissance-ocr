@@ -1,25 +1,60 @@
-# GSoC 2026: Handwritten VLM OCR Pipeline Evaluation (Test II)
+# Test II write-up — handwritten VLM OCR
 
-## Executive Summary
-This report details the results of my implementation of a Vision-Language Model (VLM) pipeline for transcribing 17th-century Spanish manuscripts. By utilizing `gemini-2.5-flash` in a zero-shot configuration, we achieved an average Character Error Rate (CER) of **15.2%** across five distinct early modern sources.
+GSoC 2026, RenAIssance applicant test (handwritten sources).
 
-## Methodology
-Instead of a traditional multi-stage OCR (Layout -> CRNN -> LLM), this project implemented a unified VLM pipeline:
-- **Image Preprocessing**: Raw manuscript scans (~211MP) are safely downscaled to 3000px to fit within the model's vision context window without losing paleographic detail.
-- **Zero-Shot Transcription**: The model is prompted with expert paleography instructions to directly transcribe the cursive manuscript.
-- **Paleographic Resolution**: The VLM naturally resolves common abbreviations and historical ligatures, producing a semantically clean transcription in a single pass.
+## What the test asked for
 
-## Evaluation Results
-The pipeline was benchmarked against the provided handwritten ground truth transcriptions.
+Test II wants a pipeline built around an LLM or VLM, with the model doing real work on the image and transcript—not only cleaning up output from a separate OCR engine. Here, **Gemini 2.5 Flash** takes the page image (after resizing in `vlm_pipeline.py`) and returns the transcription in one shot. There is TrOCR/layout code elsewhere in the repo, but **the scores below are VLM-only** on the pages that have ground truth.
 
-| Manuscript Source | CER | WER | Status |
-|-------------------|-----|-----|--------|
-| AHPG-GPAH 1:1716 | 0.2049 | 0.4612 | Success |
-| AHPG-GPAH AU61:2 | 0.0812 | 0.2104 | Success |
-| PLEITO MARQUES DE VIANA | 0.1245 | 0.3122 | Success |
-| PT3279:146:342 | 0.1822 | 0.4311 | Success |
-| AHN INQUISICION 1667 | 0.1678 | 0.4665 | Success |
-| **Average Baseline** | **15.21%** | **37.63%** | **Excellent** |
+Metrics: **CER** and **WER** after the same whitespace normalization for hypothesis and reference (`normalize_for_metrics` in `src/utils.py`, Levenshtein in `src/evaluate.py`).
 
-## Conclusion
-The zero-shot VLM approach proves remarkably effective for difficult cursive manuscripts. While the 15% CER includes some literal mismatches where the model "helps" the reader by expanding abbreviations, the overall transcription quality is high enough for direct use by historical researchers.
+## Data
+
+- **15** pages in `manifest.jsonl` → I ran the VLM on all of them (`vlm_results_submission.jsonl`).
+- **5** pages have text in `ground_truth.jsonl` (one page per bundle, same `page_id` as the manifest).
+- The other **10** transcripts aren’t scored here because there’s no reference string for them in-repo.
+
+I kept a copy of the predictions I report on as `data/predictions/vlm_results_submission.jsonl`. If you change `vlm_extract.py` output, re-run evaluation; numbers drift a bit run-to-run anyway.
+
+## Overall scores (those 5 pages)
+
+| | |
+|--|--|
+| Mean CER | 16.75% (0.1675) |
+| Mean WER | 40.19% (0.4019) |
+
+## Per page
+
+Same evaluation run as the averages above.
+
+| Source | CER | WER |
+|--------|-----|-----|
+| AHPG-GPAH 1:1716 | 0.1881 | 0.4151 |
+| AHPG-GPAH AU61:2 | 0.1913 | 0.4103 |
+| AHN Inquisición 1667 | 0.1840 | 0.4641 |
+| PT3279:146:342 (1857) | 0.0946 | 0.2791 |
+| Pleito Marqués de Viana | 0.1796 | 0.4408 |
+
+## How to reproduce
+
+```bash
+source .venv/bin/activate   # optional
+
+python scripts/evaluate_results.py \
+  --predictions-file data/predictions/vlm_results_submission.jsonl \
+  --ground-truth-file data/ground_truth/ground_truth.jsonl \
+  --output-dir data/predictions/eval_output
+```
+
+`summary.json` / `comparisons.jsonl` land in `eval_output/`. The submission notebook calls the same `evaluate_records` helper and prints a short excerpt for one page.
+
+To redo inference (optional):
+
+```bash
+export GEMINI_API_KEY="…"
+python scripts/vlm_extract.py
+```
+
+## Caveats
+
+Ground truth is **literal** (abbreviations, tildes, line breaks as typed). The model often **expands** or normalizes; that’s useful for reading but hurts CER. There are also straight misreads on names and place names—you can see both in the notebook excerpt.
