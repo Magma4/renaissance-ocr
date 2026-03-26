@@ -52,3 +52,4 @@ report/*
 
 # Exported notebook PDFs (regenerate locally)
 notebooks/*.pdf
+!notebooks/01_vlm_handwritten_ocr.pdf
