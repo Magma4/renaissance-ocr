@@ -2,6 +2,8 @@
 
 Repo for my GSoC 2026 **RenAIssance** applicant test (**Test II**: handwritten text, VLM-based pipeline). I’m using **Gemini 2.5 Flash** on full page images instead of a line-by-line classical OCR stack.
 
+**Branching:** this branch (`gsoc-test2-handwritten`) holds Test II only. Printed OCR (Test I) notebooks, `run_baseline.py`, `train_crnn.py`, and `report/gsoc_test_1_results.md` are on **`main`** — check out that branch for Test I.
+
 ## What’s in here
 
 | Piece | What I used |
@@ -11,7 +13,7 @@ Repo for my GSoC 2026 **RenAIssance** applicant test (**Test II**: handwritten t
 | PDFs → PNGs | PyMuPDF in `scripts/extract_pages.py`, 300 DPI; images are shrunk to max 3000px before the API call |
 | Scoring | CER and WER vs `data/ground_truth/ground_truth.jsonl` (`src/evaluate.py`, `scripts/evaluate_results.py`) |
 
-I also have older TrOCR/layout code under `src/` and other notebooks; **the numbers in the report** are from the VLM path only.
+There is still shared `src/` code (utils, evaluate, preprocessing, layout, etc.) from the same project; **the numbers in `report/gsoc_test_2_results.md`** are VLM-only on the scored pages.
 
 ## Numbers (short version)
 
