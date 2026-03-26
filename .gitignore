@@ -50,3 +50,6 @@ NEXT_STEPS.md
 report/*
 !report/gsoc_test_2_results.md
 !report/report_template.md
+
+# Exported notebook PDFs (regenerate locally)
+notebooks/*.pdf
