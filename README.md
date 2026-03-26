@@ -148,6 +148,8 @@ python scripts/evaluate_results.py \
 
 Both metrics are computed **before and after cleanup**. The delta `cer_delta = cleaned_cer - raw_cer` shows the contribution of the LLM correction step.
 
+Test I numbers, methods, and reproduction commands are written up in `report/gsoc_test_1_results.md`.
+
 ## Notebooks
 
 | Notebook | Contents |

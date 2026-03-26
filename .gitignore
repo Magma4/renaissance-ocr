@@ -45,10 +45,9 @@ Print/
 Print.zip
 NEXT_STEPS.md
 
-# report/: version only Test II write-up + template (no proposals, PDFs, or Word)
+# report/: Test I write-up only on main (Test II lives on gsoc-test2-handwritten)
 report/*
-!report/gsoc_test_2_results.md
-!report/report_template.md
+!report/gsoc_test_1_results.md
 
 # Exported notebook PDFs (regenerate locally)
 notebooks/*.pdf

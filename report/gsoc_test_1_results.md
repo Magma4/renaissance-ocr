@@ -1,7 +1,7 @@
-# RenAIssance Test I Report — Printed OCR Baseline for Early Modern Spanish Sources
+# GSoC Test I results — Printed OCR baseline (early modern Spanish)
 
-**Author:** Raymond Frimpong Amoateng
-**Date:** March 2026
+**Author:** Raymond Frimpong Amoateng  
+**Date:** March 2026  
 **Project:** RenAIssance GSoC 2026 — Test I (Printed Text OCR)
 
 ---
@@ -126,7 +126,7 @@ Gemini improved 2 of 3 pages, with a 8.3% CER reduction on the best page. Page 0
 
 ### Representative Gemini correction
 
-> **Raw:** `Io, P. GARCIA de Ia COMP. de JESUS`
+> **Raw:** `Io, P. GARCIA de Ia COMP. de JESUS`  
 > **Gemini:** `Io, P. GARCIA de la COMP. de JESUS` ✓
 
 The capital `I` being misread as lowercase `l` — then corrected by Gemini — is a known failure mode of TrOCR on historical fonts where the long-s and capital I are visually similar.
@@ -203,6 +203,6 @@ python scripts/evaluate_results.py \
   --output-dir outputs/gemini_eval
 ```
 
-**Environment:** Python 3.13, PyTorch 2.2, Transformers 4.39, macOS (CPU only).
-**Model:** `microsoft/trocr-base-printed` (zero-shot).
+**Environment:** Python 3.13, PyTorch 2.2, Transformers 4.39, macOS (CPU only).  
+**Model:** `microsoft/trocr-base-printed` (zero-shot).  
 **Gemini model:** `models/gemini-flash-lite-latest` (free tier).
