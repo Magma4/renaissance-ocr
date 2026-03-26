@@ -45,5 +45,7 @@ Print/
 Print.zip
 NEXT_STEPS.md
 
-# Local reports / proposals (not in repo)
-report/
+# report/: version only Test II write-up + template (no proposals, PDFs, or Word)
+report/*
+!report/gsoc_test_2_results.md
+!report/report_template.md
