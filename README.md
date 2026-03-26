@@ -3,6 +3,8 @@
 This repo is my GSoC 2026 test submission for the RenAIssance project (printed OCR track).
 The goal is to recognise main text from scanned 17th-century Spanish printed sources.
 
+**Branching:** this branch (`main`) holds **Test I** (printed OCR). Handwritten VLM work (**Test II**) — `notebooks/01_vlm_handwritten_ocr.ipynb`, `src/vlm_pipeline.py`, `scripts/vlm_extract.py`, `report/gsoc_test_2_results.md`, and `data/predictions/vlm_results_submission.jsonl` — is on **`gsoc-test2-handwritten`**.
+
 ## Architecture & Approach
 
 The pipeline implements two OCR backends:
